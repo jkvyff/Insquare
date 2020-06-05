@@ -1,9 +1,9 @@
 # Inscribed Square Problem (Toeplitz Square Peg)
 
-![Inscribed squares from Wikipedia](public/wiki_inscribed_square.png)
-
 I find the Inscribed square problem quite interesting, and simply wanted to create a space to explore its bounds through code.
 https://en.wikipedia.org/wiki/Inscribed_square_problem
+<br>
+<img src="public/wiki_inscribed_square.png" alt="Inscribed squares from Wikipedia" width="400" height="400">
 
 ## Approach
 
