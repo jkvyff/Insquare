@@ -1,6 +1,6 @@
 import React from "react";
 
-const Square = ({ square, strokeWidth }) => {
+const Square = ({ square, strokeWidth, transform }) => {
   const { a, b, c, d } = square;
   console.log(square);
 
@@ -13,7 +13,7 @@ const Square = ({ square, strokeWidth }) => {
         y2={b[1]}
         strokeWidth={strokeWidth}
         stroke="black"
-        transform="translate(200 100)"
+        transform={transform}
       />
       <line
         x1={b[0]}
@@ -22,7 +22,7 @@ const Square = ({ square, strokeWidth }) => {
         y2={c[1]}
         strokeWidth={strokeWidth}
         stroke="black"
-        transform="translate(200 100)"
+        transform={transform}
       />
       <line
         x1={c[0]}
@@ -31,7 +31,7 @@ const Square = ({ square, strokeWidth }) => {
         y2={d[1]}
         strokeWidth={strokeWidth}
         stroke="black"
-        transform="translate(200 100)"
+        transform={transform}
       />
       <line
         x1={d[0]}
@@ -40,7 +40,7 @@ const Square = ({ square, strokeWidth }) => {
         y2={a[1]}
         strokeWidth={strokeWidth}
         stroke="black"
-        transform="translate(200 100)"
+        transform={transform}
       />
     </>
   );

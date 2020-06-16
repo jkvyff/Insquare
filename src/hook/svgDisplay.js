@@ -1,212 +1,239 @@
-import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import Jordan from "./jordan";
-import SampleDot from "./sampleDot";
-import Line from "./line";
-import Wings from "./wings";
-import Square from "./square";
+import React, { useState, useEffect, useRef } from "react";
+import Sidebar from "./sidebar";
+import SVGMap from "./svgMap";
+
 import { svgPathProperties } from "svg-path-properties";
 
 const SVGDisplay = () => {
-  const { handleSubmit, register, errors } = useForm();
-  const onSubmit = (value) => {
-    setSampleCount(value.sampleCount);
-  };
+  const svgGeom = useRef(null);
 
   const [dPath, setDPath] = useState(
-    "M28.3,-37C39,-37.2,51.7,-33.3,57,-25C62.2,-16.8,60.1,-4.2,60.7,10.5C61.3,25.2,64.6,42,57.4,49.1C50.3,56.2,32.6,53.6,20.1,48.1C7.5,42.6,0,34.1,-10.5,32.5C-20.9,30.9,-34.3,36.1,-45.2,33.6C-56,31,-64.4,20.7,-71.6,7C-78.8,-6.8,-84.7,-24.1,-78.2,-34.6C-71.6,-45,-52.6,-48.6,-37.5,-46.4C-22.3,-44.2,-11.2,-36.3,-1.2,-34.4C8.8,-32.6,17.6,-36.8,28.3,-37Z"
+    "M25.1,-46.5C31.3,-40,33.9,-30.6,43.3,-22.3C52.7,-14.1,68.8,-7,76.2,4.2C83.5,15.5,82.1,31.1,68.2,31.5C54.4,32,28,17.4,14.5,17.2C1.1000000000000014,17,0.5,31.1,-8,45C-16.6,58.9,-33.1,72.5,-42.5,70.3C-51.9,68.2,-54.1,50.3,-62,36C-69.9,21.7,-83.6,10.8,-75,5C-66.4,-0.9000000000000004,-35.6,-1.8000000000000007,-21.4,-5.300000000000001C-7.200000000000003,-8.799999999999997,-9.7,-14.899999999999999,-8.899999999999999,-24.5C-8.1,-34,-4,-47,2.7,-51.7C9.5,-56.4,19,-53,25.1,-46.5Z"
   );
-  //M25.1,-46.5C31.3,-40,33.9,-30.6,43.3,-22.3C52.7,-14.1,68.8,-7,76.2,4.2C83.5,15.5,82.1,31.1,68.2,31.5C54.4,32,28,17.4,14.5,17.2C1.1000000000000014,17,0.5,31.1,-8,45C-16.6,58.9,-33.1,72.5,-42.5,70.3C-51.9,68.2,-54.1,50.3,-62,36C-69.9,21.7,-83.6,10.8,-75,5C-66.4,-0.9000000000000004,-35.6,-1.8000000000000007,-21.4,-5.300000000000001C-7.200000000000003,-8.799999999999997,-9.7,-14.899999999999999,-8.899999999999999,-24.5C-8.1,-34,-4,-47,2.7,-51.7C9.5,-56.4,19,-53,25.1,-46.5Z
-  const [sampleCount, setSampleCount] = useState(3);
+  // M25.1,-46.5C31.3,-40,33.9,-30.6,43.3,-22.3C52.7,-14.1,68.8,-7,76.2,4.2C83.5,15.5,82.1,31.1,68.2,31.5C54.4,32,28,17.4,14.5,17.2C1.1000000000000014,17,0.5,31.1,-8,45C-16.6,58.9,-33.1,72.5,-42.5,70.3C-51.9,68.2,-54.1,50.3,-62,36C-69.9,21.7,-83.6,10.8,-75,5C-66.4,-0.9000000000000004,-35.6,-1.8000000000000007,-21.4,-5.300000000000001C-7.200000000000003,-8.799999999999997,-9.7,-14.899999999999999,-8.899999999999999,-24.5C-8.1,-34,-4,-47,2.7,-51.7C9.5,-56.4,19,-53,25.1,-46.5Z
+
+  const [sampleCount, setSampleCount] = useState(40);
   const [nodes, setNodes] = useState([]);
   const [lines, setLines] = useState([]);
   const [wings, setWings] = useState([]);
   const [wingsScores, setWingsScores] = useState([]);
   const [squares, setSquares] = useState([]);
 
-  useEffect(() => {
+  const [showLines, setShowLines] = useState(false);
+  const [showWings, setShowWings] = useState(false);
+
+  const [precision, setprecision] = useState(0.02);
+  const [scanPos, setScanPos] = useState(0);
+
+  const calcNodes = () => {
     const properties = new svgPathProperties(dPath);
     const totalLength = properties.getTotalLength();
+
     const allNodes = [];
-    const allLines = [];
-    const allWings = [];
-    const allWingsMin = [];
-    const allSquares = [];
 
     for (let i = 1; i <= sampleCount; i++) {
       allNodes.push(
         properties.getPointAtLength((1 / sampleCount) * totalLength * i)
       );
     }
-    setNodes(allNodes);
 
+    setNodes(allNodes);
+    return allNodes;
+  };
+
+  const calcLines = (nodes) => {
     let posA = 0;
-    let offset = 1;
-    while (offset < sampleCount / 2) {
+    const allLines = [];
+
+    // const posD = scanPos < sampleCount ? scanPos : 0;
+    // let posC = posD + 1;
+    // while (posC !== posD) {
+    //   allLines.push({
+    //     ax: nodes[posD].x,
+    //     ay: nodes[posD].y,
+    //     bx: nodes[posC].x,
+    //     by: nodes[posC].y,
+    //   });
+
+    //   posC === sampleCount - 1 ? (posC = 0) : posC++;
+    // }
+
+    let offset = posA + 1;
+    while (offset < sampleCount / 2 + 1) {
       while (posA < sampleCount) {
         const posB = (posA + offset) % sampleCount;
         allLines.push({
-          ax: allNodes[posA].x,
-          ay: allNodes[posA].y,
-          bx: allNodes[posB].x,
-          by: allNodes[posB].y,
+          ax: nodes[posA].x,
+          ay: nodes[posA].y,
+          bx: nodes[posB].x,
+          by: nodes[posB].y,
         });
         posA++;
       }
       posA = 0;
       offset++;
     }
-    // for (let i = 0; i < sampleCount - 1; i++) {
-    //   for (let j = i + 1; j < sampleCount; j++) {
-    //     allLines.push({
-    //       ax: allNodes[i].x,
-    //       ay: allNodes[i].y,
-    //       bx: allNodes[j].x,
-    //       by: allNodes[j].y,
-    //     });
-    //   }
-    // }
     setLines(allLines);
+    return allLines;
+  };
 
-    for (let i = 0; i < allLines.length; i++) {
-      const hypoDistance = Math.sqrt(
-        Math.pow(allLines[i].ax - allLines[i].bx, 2) +
-          Math.pow(allLines[i].ay - allLines[i].by, 2)
-      );
-      const halfHypoDistance = hypoDistance / 2;
-      const slope =
-        (allLines[i].by - allLines[i].ay) / (allLines[i].bx - allLines[i].ax);
-      const invSlope = -(1 / slope);
-      const midpoint = [
-        (allLines[i].ax + allLines[i].bx) / 2,
-        (allLines[i].ay + allLines[i].by) / 2,
-      ];
-      const left =
-        slope > 0
-          ? [
-              midpoint[0] + halfHypoDistance * Math.sin(Math.atan(slope)),
-              midpoint[1] + halfHypoDistance * Math.sin(Math.atan(invSlope)),
-            ]
-          : [
-              midpoint[0] + halfHypoDistance * Math.sin(Math.atan(slope)),
-              midpoint[1] - halfHypoDistance * Math.sin(Math.atan(invSlope)),
-            ];
-      const right =
-        slope > 0
-          ? [
-              midpoint[0] - halfHypoDistance * Math.sin(Math.atan(slope)),
-              midpoint[1] - halfHypoDistance * Math.sin(Math.atan(invSlope)),
-            ]
-          : [
-              midpoint[0] - halfHypoDistance * Math.sin(Math.atan(slope)),
-              midpoint[1] + halfHypoDistance * Math.sin(Math.atan(invSlope)),
-            ];
+  const calcWings = (lines) => {
+    const allWings = [];
 
-      allWings.push({
-        left: left,
-        right: right,
-      });
+    for (let i = 0; i < lines.length; i++) {
+      if (
+        true
+        // lines[i].ax === -16.710964026067217 ||
+        // lines[i].bx === -16.710964026067217
+      ) {
+        const hypoDistance = Math.sqrt(
+          Math.pow(lines[i].ax - lines[i].bx, 2) +
+            Math.pow(lines[i].ay - lines[i].by, 2)
+        );
+        const halfHypoDistance = hypoDistance / 2;
+        const yDiff = lines[i].by - lines[i].ay;
+        const xDiff = lines[i].bx - lines[i].ax;
+        const slope = yDiff / xDiff;
+        const invSlope = -(1 / slope);
+        const midpoint = [
+          (lines[i].ax + lines[i].bx) / 2,
+          (lines[i].ay + lines[i].by) / 2,
+        ];
+
+        const slopeChange = halfHypoDistance * Math.sin(Math.atan(slope));
+        const invSlopeChange = halfHypoDistance * Math.sin(Math.atan(invSlope));
+
+        const left = [
+          xDiff > 0 ? midpoint[0] + slopeChange : midpoint[0] - slopeChange,
+          yDiff > 0
+            ? midpoint[1] + invSlopeChange
+            : midpoint[1] - invSlopeChange,
+        ];
+        const right = [
+          xDiff < 0 ? midpoint[0] + slopeChange : midpoint[0] - slopeChange,
+          yDiff < 0
+            ? midpoint[1] + invSlopeChange
+            : midpoint[1] - invSlopeChange,
+        ];
+
+        allWings.push({
+          left: left,
+          right: right,
+        });
+      }
     }
     setWings(allWings);
+    return allWings;
+  };
+
+  const calcWingsScores = (wings) => {
+    const wingsMinDistanceToPath = [];
 
     let lMinDist = Number.MAX_SAFE_INTEGER;
     let rMinDist = Number.MAX_SAFE_INTEGER;
     let smallestDist = Number.MAX_SAFE_INTEGER;
-    for (let i = 0; i < allWings.length; i++) {
-      for (let j = 0; j < allNodes.length; j++) {
+
+    for (let i = 0; i < wings.length; i++) {
+      for (let j = 0; j < nodes.length; j++) {
         const lDist = Math.sqrt(
-          Math.pow(allWings[i].left[0] - allNodes[j].x, 2) +
-            Math.pow(allWings[i].left[1] - allNodes[j].y, 2)
+          Math.pow(wings[i].left[0] - nodes[j].x, 2) +
+            Math.pow(wings[i].left[1] - nodes[j].y, 2)
         );
         const rDist = Math.sqrt(
-          Math.pow(allWings[i].right[0] - allNodes[j].x, 2) +
-            Math.pow(allWings[i].right[1] - allNodes[j].y, 2)
+          Math.pow(wings[i].right[0] - nodes[j].x, 2) +
+            Math.pow(wings[i].right[1] - nodes[j].y, 2)
         );
         if (lMinDist < smallestDist && rMinDist < smallestDist) {
           smallestDist = Math.max(lMinDist, rMinDist);
         }
-        lMinDist = lDist < lMinDist ? lDist : lMinDist;
-        rMinDist = rDist < rMinDist ? rDist : rMinDist;
+        if (i + 1 !== j && i - 1 !== j) {
+          lMinDist = lDist < lMinDist ? lDist : lMinDist;
+          rMinDist = rDist < rMinDist ? rDist : rMinDist;
+        }
       }
-      allWingsMin.push({ left: lMinDist, right: rMinDist });
+      wingsMinDistanceToPath.push({ left: lMinDist, right: rMinDist });
       lMinDist = Number.MAX_SAFE_INTEGER;
       rMinDist = Number.MAX_SAFE_INTEGER;
     }
 
-    console.log(smallestDist);
-    for (let i = 0; i < allWingsMin.length; i++) {
+    setWingsScores([wingsMinDistanceToPath, smallestDist]);
+    return [wingsMinDistanceToPath, smallestDist];
+  };
+
+  const calcSquares = (lines, wings, wingsScores, smallestDist) => {
+    const allSquares = [];
+
+    for (let i = 0; i < wingsScores.length; i++) {
+      const target = smallestDist + precision;
       if (
-        -smallestDist - 0.1 < allWingsMin[i].left &&
-        allWingsMin[i].left < smallestDist + 0.01 &&
-        -smallestDist - 0.1 < allWingsMin[i].right &&
-        allWingsMin[i].right < smallestDist + 0.01
+        -target <= wingsScores[i].left &&
+        wingsScores[i].left <= target &&
+        -target <= wingsScores[i].right &&
+        wingsScores[i].right <= target
       ) {
         allSquares.push({
-          a: allWings[i].left,
-          b: [allLines[i].ax, allLines[i].ay],
-          c: allWings[i].right,
-          d: [allLines[i].bx, allLines[i].by],
+          a: [lines[i].ax, lines[i].ay],
+          b: wings[i].left,
+          c: [lines[i].bx, lines[i].by],
+          d: wings[i].right,
         });
       }
     }
     setSquares(allSquares);
-    setWingsScores(allWingsMin);
-  }, [dPath, sampleCount]);
+  };
+
+  useEffect(() => {
+    const nodes = calcNodes();
+    const lines = calcLines(nodes);
+    calcWings(lines);
+    scanPos >= sampleCount && setScanPos(0);
+    // eslint-disable-next-line
+  }, [dPath, sampleCount, scanPos]);
+
+  useEffect(() => {
+    if (wings.length > 0) {
+      calcWingsScores(wings);
+    }
+    // eslint-disable-next-line
+  }, [wings]);
+
+  useEffect(() => {
+    if (wingsScores.length > 0) {
+      calcSquares(lines, wings, wingsScores[0], wingsScores[1]);
+    }
+    // eslint-disable-next-line
+  }, [wingsScores, precision]);
 
   return (
     <>
-      <form>
-        <label>
-          SVG Path:
-          <input
-            onChange={(path) => setDPath(path.target.value)}
-            type="text"
-            name="dPath"
-          />
-        </label>
-      </form>
-
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label>
-          Sample Count:
-          <input
-            type="text"
-            name="sampleCount"
-            placeholder={sampleCount}
-            ref={register({
-              validate: (value) => value <= 1000 || "Nice try!",
-            })}
-          />
-          <button type="submit">Submit</button>
-          <br />
-          {errors.sampleCount && errors.sampleCount.message}
-        </label>
-      </form>
-      {dPath}
-
-      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-        <Jordan dPath={dPath} />
-        {nodes.map((node, i) =>
-          lines.length > 1000 && i % 10 === 0 ? (
-            <SampleDot key={i + "a"} cx={node.x} cy={node.y} />
-          ) : (
-            <SampleDot key={i + "a"} cx={node.x} cy={node.y} />
-          )
-        )}
-        {/* {lines.map((line, i) => (
-          <Line key={i} line={line} />
-        ))} */}
-        {wings.map((wing, i) =>
-          wings.length > 1000 && i % 2 === 0 ? (
-            <Wings key={i} line={lines[i]} wings={wing} strokeWidth=".1" />
-          ) : (
-            <Wings key={i} line={lines[i]} wings={wing} strokeWidth=".1" />
-          )
-        )}
-        {squares.map((square, i) => (
-          <Square key={i} square={square} strokeWidth=".5" />
-        ))}
-      </svg>
+      <Sidebar
+        width={300}
+        height="100vh"
+        dPath={dPath}
+        setDPath={setDPath}
+        sampleCount={sampleCount}
+        setSampleCount={setSampleCount}
+        precision={precision}
+        setprecision={setprecision}
+        showLines={showLines}
+        setShowLines={setShowLines}
+        showWings={showWings}
+        setShowWings={setShowWings}
+        scanPos={scanPos}
+        setScanPos={setScanPos}
+      />
+      <div className="svgWrap">
+        <SVGMap
+          svgGeom={svgGeom}
+          dPath={dPath}
+          nodes={nodes}
+          lines={lines}
+          wings={wings}
+          squares={squares}
+          showLines={showLines}
+          showWings={showWings}
+        />
+      </div>
     </>
   );
 };

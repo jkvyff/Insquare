@@ -1,6 +1,6 @@
 import React from "react";
 
-const Jordan = ({ id, cx, cy }) => {
+const Jordan = ({ id, cx, cy, transform }) => {
   return (
     <>
       <circle
@@ -9,7 +9,7 @@ const Jordan = ({ id, cx, cy }) => {
         cy={cy}
         r=".5"
         fill="blue"
-        transform="translate(200 100)"
+        transform={transform}
       />
     </>
   );

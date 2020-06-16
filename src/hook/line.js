@@ -1,6 +1,6 @@
 import React from "react";
 
-const Line = ({ line }) => {
+const Line = ({ line, transform }) => {
   const { ax, ay, bx, by } = line;
   return (
     <>
@@ -11,7 +11,7 @@ const Line = ({ line }) => {
         y2={by}
         strokeWidth=".1"
         stroke="cyan"
-        transform="translate(200 100)"
+        transform={transform}
       />
     </>
   );
