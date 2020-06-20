@@ -11,10 +11,14 @@ const Sidebar = ({
   setSampleCount,
   precision,
   setprecision,
+  view,
+  setView,
   showLines,
   setShowLines,
   showWings,
   setShowWings,
+  showSquares,
+  setShowSquares,
   scanPos,
   setScanPos,
 }) => {
@@ -34,8 +38,10 @@ const Sidebar = ({
     value.dPath && value.dPath.length > 0 && setDPath(value.dPath);
     value.sampleCount && setSampleCount(Number(value.sampleCount));
     value.precision && setprecision(Number(value.precision));
+    value.selectView && setView(Number(value.selectView));
     typeof value.showLines && setShowLines(value.showLines);
     typeof value.showWings && setShowWings(value.showWings);
+    typeof value.showSquares && setShowSquares(value.showSquares);
   };
 
   const toggleMenu = () => {
@@ -69,12 +75,14 @@ const Sidebar = ({
         ></button>
         <div className="content">
           <form onSubmit={handleSubmit(onSubmit)}>
+            <h3>Generate Path</h3>
             <div>
               <label htmlFor="dPath">SVG Path: </label>
               <input
                 id="dPath"
                 type="text"
                 name="dPath"
+                className="field"
                 ref={register({
                   required: false,
                   validate: (str) =>
@@ -95,6 +103,7 @@ const Sidebar = ({
                 id="sampleCount"
                 type="text"
                 name="sampleCount"
+                className="field"
                 ref={register({
                   validate: (value) =>
                     (0 <= value && value <= 1000) ||
@@ -107,11 +116,12 @@ const Sidebar = ({
             </div>
 
             <div>
-              <label htmlFor="precision">precision: </label>
+              <label htmlFor="precision">Precision: </label>
               <input
                 id="precision"
                 type="text"
                 name="precision"
+                className="field"
                 ref={register({
                   validate: (value) =>
                     (0 <= value && value <= 1) || "Please stay between 0 and 1",
@@ -122,16 +132,47 @@ const Sidebar = ({
               </p>
             </div>
 
-            <div>{"Node: " + scanPos}</div>
+            <hr />
+            <h3>Select View</h3>
 
+            <div>
+              <label htmlFor="selectView">Select View</label>
+              <div>
+                <select
+                  id="selectView"
+                  name="selectView"
+                  className="field"
+                  ref={register({
+                    validate: (value) =>
+                      (0 <= value && value < 3) ||
+                      "Please select a valuid value",
+                  })}
+                >
+                  <option value={0}>Full</option>
+                  <option value={1}>Point</option>
+                  <option value={2}>Ring</option>
+                </select>
+              </div>
+              <p className="error-message">
+                {errors.selectView && errors.selectView.message}
+              </p>
+            </div>
+
+            <div className={view === 0 ? "disabled" : ""}>
+              {"Node: " + scanPos}
+            </div>
             <Slider
+              className="slider"
               axis="x"
               xstep={1}
               xmin={0}
               xmax={sampleCount - 2}
               x={scanPos}
+              disabled={view === 0}
               onChange={(res) => setScanPos(res.x)}
             />
+
+            <hr />
 
             <h3>Show Features</h3>
 
@@ -143,6 +184,7 @@ const Sidebar = ({
                     type="checkbox"
                     className="checkbox"
                     name="showLines"
+                    defaultChecked={showLines}
                     ref={register}
                   />
                   Lines
@@ -161,6 +203,7 @@ const Sidebar = ({
                     type="checkbox"
                     className="checkbox"
                     name="showWings"
+                    defaultChecked={showWings}
                     ref={register}
                   />
                   Wings
@@ -168,6 +211,25 @@ const Sidebar = ({
               </label>
               <p className="error-message">
                 {errors.showWings && errors.showWings.message}
+              </p>
+            </div>
+
+            <div>
+              <label className="checkLabel" htmlFor="showSquares">
+                <div>
+                  <input
+                    id="showSquares"
+                    type="checkbox"
+                    className="checkbox"
+                    name="showSquares"
+                    defaultChecked={showSquares}
+                    ref={register}
+                  />
+                  Squares
+                </div>
+              </label>
+              <p className="error-message">
+                {errors.showSquares && errors.showSquares.message}
               </p>
             </div>
 

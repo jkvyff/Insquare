@@ -155,6 +155,10 @@ body {
   border-left: 0;
 }
 
+form {
+  margin-right: 4rem;
+}
+
 label {
   display: block;
   color: #4a5568;
@@ -166,7 +170,8 @@ label {
   user-select: none;
 }
 
-input {
+.field {
+  width: 100%;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   border-width: 1px;
   border-radius: 0.25rem;
@@ -176,6 +181,10 @@ input {
   padding-right: 0.75rem;
   color: #4a5568;
   line-height: 1.25;
+}
+
+.disabled {
+  color: grey;
 }
 
 .checkLabel {
@@ -202,8 +211,8 @@ input {
   margin-right: 1rem;
 }
 
-.scanSlider {
-  padding: 1rem;
+.slider {
+  margin: 1rem;
 }
 
 .error-message {

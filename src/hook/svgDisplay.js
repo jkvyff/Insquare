@@ -11,18 +11,22 @@ const SVGDisplay = () => {
     "M25.1,-46.5C31.3,-40,33.9,-30.6,43.3,-22.3C52.7,-14.1,68.8,-7,76.2,4.2C83.5,15.5,82.1,31.1,68.2,31.5C54.4,32,28,17.4,14.5,17.2C1.1000000000000014,17,0.5,31.1,-8,45C-16.6,58.9,-33.1,72.5,-42.5,70.3C-51.9,68.2,-54.1,50.3,-62,36C-69.9,21.7,-83.6,10.8,-75,5C-66.4,-0.9000000000000004,-35.6,-1.8000000000000007,-21.4,-5.300000000000001C-7.200000000000003,-8.799999999999997,-9.7,-14.899999999999999,-8.899999999999999,-24.5C-8.1,-34,-4,-47,2.7,-51.7C9.5,-56.4,19,-53,25.1,-46.5Z"
   );
   // M25.1,-46.5C31.3,-40,33.9,-30.6,43.3,-22.3C52.7,-14.1,68.8,-7,76.2,4.2C83.5,15.5,82.1,31.1,68.2,31.5C54.4,32,28,17.4,14.5,17.2C1.1000000000000014,17,0.5,31.1,-8,45C-16.6,58.9,-33.1,72.5,-42.5,70.3C-51.9,68.2,-54.1,50.3,-62,36C-69.9,21.7,-83.6,10.8,-75,5C-66.4,-0.9000000000000004,-35.6,-1.8000000000000007,-21.4,-5.300000000000001C-7.200000000000003,-8.799999999999997,-9.7,-14.899999999999999,-8.899999999999999,-24.5C-8.1,-34,-4,-47,2.7,-51.7C9.5,-56.4,19,-53,25.1,-46.5Z
-
-  const [sampleCount, setSampleCount] = useState(40);
+  // M-50,-50 h100 a20,20 0 0 1 20,20 v100 a20,20 0 0 1 -20,20 h-100 a20,20 0 0 1 -20,-20 v-100 a20,20 0 0 1 20,-20 z
+  // M0 0 Q50 30 100 0 70 50 100 100 50 70 0 100 30 50 0 0Z
+  const [sampleCount, setSampleCount] = useState(150);
   const [nodes, setNodes] = useState([]);
   const [lines, setLines] = useState([]);
   const [wings, setWings] = useState([]);
   const [wingsScores, setWingsScores] = useState([]);
   const [squares, setSquares] = useState([]);
 
-  const [showLines, setShowLines] = useState(false);
-  const [showWings, setShowWings] = useState(false);
+  const [view, setView] = useState(1);
 
-  const [precision, setprecision] = useState(0.02);
+  const [showLines, setShowLines] = useState(false);
+  const [showWings, setShowWings] = useState(true);
+  const [showSquares, setShowSquares] = useState(true);
+
+  const [precision, setprecision] = useState(0.08);
   const [scanPos, setScanPos] = useState(0);
 
   const calcNodes = () => {
@@ -45,34 +49,53 @@ const SVGDisplay = () => {
     let posA = 0;
     const allLines = [];
 
-    // const posD = scanPos < sampleCount ? scanPos : 0;
-    // let posC = posD + 1;
-    // while (posC !== posD) {
-    //   allLines.push({
-    //     ax: nodes[posD].x,
-    //     ay: nodes[posD].y,
-    //     bx: nodes[posC].x,
-    //     by: nodes[posC].y,
-    //   });
+    switch (view) {
+      case 1:
+        const posD = scanPos < sampleCount ? scanPos : 0;
+        let posC = posD + 1;
+        while (posC !== posD) {
+          allLines.push({
+            ax: nodes[posD].x,
+            ay: nodes[posD].y,
+            bx: nodes[posC].x,
+            by: nodes[posC].y,
+          });
+          posC === sampleCount - 1 ? (posC = 0) : posC++;
+        }
+        break;
 
-    //   posC === sampleCount - 1 ? (posC = 0) : posC++;
-    // }
+      case 2:
+        let offSetB = scanPos + 1;
+        while (posA < sampleCount) {
+          const nextPos = (posA + offSetB) % sampleCount;
+          allLines.push({
+            ax: nodes[posA].x,
+            ay: nodes[posA].y,
+            bx: nodes[nextPos].x,
+            by: nodes[nextPos].y,
+          });
+          posA++;
+        }
+        break;
 
-    let offset = posA + 1;
-    while (offset < sampleCount / 2 + 1) {
-      while (posA < sampleCount) {
-        const posB = (posA + offset) % sampleCount;
-        allLines.push({
-          ax: nodes[posA].x,
-          ay: nodes[posA].y,
-          bx: nodes[posB].x,
-          by: nodes[posB].y,
-        });
-        posA++;
-      }
-      posA = 0;
-      offset++;
+      default:
+        let offset = posA + 1;
+        while (offset < sampleCount / 2 + 1) {
+          while (posA < sampleCount) {
+            const posB = (posA + offset) % sampleCount;
+            allLines.push({
+              ax: nodes[posA].x,
+              ay: nodes[posA].y,
+              bx: nodes[posB].x,
+              by: nodes[posB].y,
+            });
+            posA++;
+          }
+          posA = 0;
+          offset++;
+        }
     }
+
     setLines(allLines);
     return allLines;
   };
@@ -188,7 +211,7 @@ const SVGDisplay = () => {
     calcWings(lines);
     scanPos >= sampleCount && setScanPos(0);
     // eslint-disable-next-line
-  }, [dPath, sampleCount, scanPos]);
+  }, [view, dPath, sampleCount, scanPos]);
 
   useEffect(() => {
     if (wings.length > 0) {
@@ -215,13 +238,18 @@ const SVGDisplay = () => {
         setSampleCount={setSampleCount}
         precision={precision}
         setprecision={setprecision}
+        view={view}
+        setView={setView}
         showLines={showLines}
         setShowLines={setShowLines}
         showWings={showWings}
         setShowWings={setShowWings}
+        showSquares={showSquares}
+        setShowSquares={setShowSquares}
         scanPos={scanPos}
         setScanPos={setScanPos}
       />
+
       <div className="svgWrap">
         <SVGMap
           svgGeom={svgGeom}
@@ -229,9 +257,11 @@ const SVGDisplay = () => {
           nodes={nodes}
           lines={lines}
           wings={wings}
+          wingsScores={wingsScores}
           squares={squares}
           showLines={showLines}
           showWings={showWings}
+          showSquares={showSquares}
         />
       </div>
     </>

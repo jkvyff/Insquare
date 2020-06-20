@@ -11,9 +11,11 @@ const SVGMap = ({
   nodes,
   lines,
   wings,
+  wingsScores,
   squares,
   showLines,
   showWings,
+  showSquares,
 }) => {
   const [matrix, setMatrix] = useState([2, 0, 0, 2, 200, 200]);
   const [dragging, setDragging] = useState(false);
@@ -39,6 +41,8 @@ const SVGMap = ({
   };
 
   const onDragStart = (e) => {
+    console.log(e.changedTouches);
+
     const startPosX =
       typeof e.clientX === "undefined"
         ? e.changedTouches[0].clientX
@@ -89,47 +93,50 @@ const SVGMap = ({
   };
 
   return (
-    <svg
-      className="svg"
-      ref={svgGeom}
-      width="100px"
-      height="100px"
-      viewBox="0 0 400 400"
-      xmlns="http://www.w3.org/2000/svg"
-      onMouseDown={(e) => onDragStart(e)}
-      onTouchStart={(e) => onDragStart(e)}
-      onMouseMove={(e) => onDragMove(e)}
-      onTouchMove={(e) => onDragMove(e)}
-      onMouseUp={(e) => onDragEnd(e)}
-      onTouchEnd={(e) => onDragEnd(e)}
-      onWheel={(e) => onWheel(e)}
-    >
-      <g transform={`matrix(${matrix.join(" ")})`}>
-        <Jordan dPath={dPath} />
-        {nodes.map((node, i) =>
-          lines.length > 1000 && i % 10 === 0 ? (
-            <SampleDot key={i + "a"} cx={node.x} cy={node.y} />
-          ) : (
-            <SampleDot key={i + "a"} cx={node.x} cy={node.y} />
-          )
-        )}
-        {showLines &&
-          lines.length < 10000 &&
-          lines.map((line, i) => <Line key={i} line={line} />)}
-        {showWings &&
-          wings.length < 10000 &&
-          wings.map((wing, i) =>
-            wings.length > 1000 && i % 2 === 0 ? (
-              <Wings key={i} line={lines[i]} wings={wing} strokeWidth=".1" />
+    <>
+      <svg
+        className="svg"
+        ref={svgGeom}
+        width="100px"
+        height="100px"
+        viewBox="0 0 400 400"
+        xmlns="http://www.w3.org/2000/svg"
+        onMouseDown={(e) => onDragStart(e)}
+        onTouchStart={(e) => onDragStart(e)}
+        onMouseMove={(e) => onDragMove(e)}
+        onTouchMove={(e) => onDragMove(e)}
+        onMouseUp={(e) => onDragEnd(e)}
+        onTouchEnd={(e) => onDragEnd(e)}
+        onWheel={(e) => onWheel(e)}
+      >
+        <g transform={`matrix(${matrix.join(" ")})`}>
+          <Jordan dPath={dPath} />
+          {nodes.map((node, i) =>
+            lines.length > 1000 && i % 10 === 0 ? (
+              <SampleDot key={i + "a"} cx={node.x} cy={node.y} />
             ) : (
-              <Wings key={i} line={lines[i]} wings={wing} strokeWidth=".1" />
+              <SampleDot key={i + "a"} cx={node.x} cy={node.y} />
             )
           )}
-        {squares.map((square, i) => (
-          <Square key={i} square={square} strokeWidth=".5" />
-        ))}
-      </g>
-    </svg>
+          {showLines &&
+            lines.length < 10000 &&
+            lines.map((line, i) => <Line key={i} line={line} />)}
+          {showWings &&
+            wings.length < 10000 &&
+            wings.map((wing, i) =>
+              wings.length > 1000 && i % 2 === 0 ? (
+                <Wings key={i} line={lines[i]} wings={wing} strokeWidth=".1" />
+              ) : (
+                <Wings key={i} line={lines[i]} wings={wing} strokeWidth=".1" />
+              )
+            )}
+          {showSquares &&
+            squares.map((square, i) => (
+              <Square key={i} square={square} strokeWidth=".5" />
+            ))}
+        </g>
+      </svg>
+    </>
   );
 };
 
