@@ -3,8 +3,8 @@
 I find the Inscribed square problem quite interesting, and simply wanted to create a space to explore its bounds through code.
 https://en.wikipedia.org/wiki/Inscribed_square_problem
 <br>
-<img src="public/wiki_inscribed_square.png" alt="Inscribed squares from Wikipedia" width="400" height="400">
-<img src="public/sample_found_square.png" alt="Program result on random blob" width="400" height="400">
+<img src="public/wiki_inscribed_square.png" alt="Inscribed squares from Wikipedia" width="400">
+<img src="public/sample_found_square.png" alt="Program result on random blob" width="400">
 
 ## Approach
 

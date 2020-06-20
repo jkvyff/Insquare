@@ -94,6 +94,44 @@ const SVGMap = ({
 
   return (
     <>
+      {/* <svg
+        className="svg"
+        width="100px"
+        height="100px"
+        viewBox="0 0 400 400"
+        xmlns="http://www.w3.org/2000/svg"
+        onMouseDown={(e) => onDragStart(e)}
+        onTouchStart={(e) => onDragStart(e)}
+        onMouseMove={(e) => onDragMove(e)}
+        onTouchMove={(e) => onDragMove(e)}
+        onMouseUp={(e) => onDragEnd(e)}
+        onTouchEnd={(e) => onDragEnd(e)}
+        onWheel={(e) => onWheel(e)}
+      >
+        {wingsScores &&
+          wingsScores[0] &&
+          wingsScores[0].length > 0 &&
+          wingsScores[0].map((score, i) => (
+            <>
+              <circle
+                key={"d" + i}
+                cx={(200 / wingsScores[0].length) * i * 1 - 100}
+                cy={score.left * 3 - 200}
+                data-value="7.2"
+                r="2"
+                fill="red"
+              ></circle>
+              <circle
+                key={"e" + i}
+                cx={(200 / wingsScores[0].length) * i * 1 - 100}
+                cy={score.right * 3 - 200}
+                data-value="7.2"
+                r="2"
+                fill="green"
+              ></circle>
+            </>
+          ))}
+      </svg> */}
       <svg
         className="svg"
         ref={svgGeom}
