@@ -38,10 +38,12 @@ const SVGDisplay = () => {
 
     const allNodes = [];
 
-    for (let i = 1; i <= sampleCount; i++) {
-      allNodes.push(
-        properties.getPointAtLength((1 / sampleCount) * totalLength * i)
-      );
+    if (sampleCount > 1) {
+      for (let i = 1; i <= sampleCount; i++) {
+        allNodes.push(
+          properties.getPointAtLength((1 / sampleCount) * totalLength * i)
+        );
+      }
     }
 
     setNodes(allNodes);
@@ -52,45 +54,47 @@ const SVGDisplay = () => {
     let posA = 0;
     const allLines = [];
 
-    switch (view) {
-      case 1:
-        const posD = scanPos < sampleCount ? scanPos : 0;
-        let posC = posD + 1;
-        while (posC !== posD) {
-          allLines.push({
-            a: [nodes[posD].x, nodes[posD].y],
-            b: [nodes[posC].x, nodes[posC].y],
-          });
-          posC === sampleCount - 1 ? (posC = 0) : posC++;
-        }
-        break;
+    if (sampleCount > 1) {
+      switch (view) {
+        case 1:
+          const posD = scanPos < sampleCount ? scanPos : 0;
+          let posC = posD + 1;
+          while (posC !== posD) {
+            allLines.push({
+              a: [nodes[posD].x, nodes[posD].y],
+              b: [nodes[posC].x, nodes[posC].y],
+            });
+            posC === sampleCount - 1 ? (posC = 0) : posC++;
+          }
+          break;
 
-      case 2:
-        let offSetB = scanPos + 1;
-        while (posA < sampleCount) {
-          const nextPos = (posA + offSetB) % sampleCount;
-          allLines.push({
-            a: [nodes[posA].x, nodes[posA].y],
-            b: [nodes[nextPos].x, nodes[nextPos].y],
-          });
-          posA++;
-        }
-        break;
-
-      default:
-        let offset = posA + 1;
-        while (offset < sampleCount / 2 + 1) {
+        case 2:
+          let offSetB = scanPos + 1;
           while (posA < sampleCount) {
-            const posB = (posA + offset) % sampleCount;
+            const nextPos = (posA + offSetB) % sampleCount;
             allLines.push({
               a: [nodes[posA].x, nodes[posA].y],
-              b: [nodes[posB].x, nodes[posB].y],
+              b: [nodes[nextPos].x, nodes[nextPos].y],
             });
             posA++;
           }
-          posA = 0;
-          offset++;
-        }
+          break;
+
+        default:
+          let offset = posA + 1;
+          while (offset < sampleCount / 2 + 1) {
+            while (posA < sampleCount) {
+              const posB = (posA + offset) % sampleCount;
+              allLines.push({
+                a: [nodes[posA].x, nodes[posA].y],
+                b: [nodes[posB].x, nodes[posB].y],
+              });
+              posA++;
+            }
+            posA = 0;
+            offset++;
+          }
+      }
     }
 
     setLines(allLines);

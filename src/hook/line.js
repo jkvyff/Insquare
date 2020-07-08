@@ -1,14 +1,14 @@
 import React from "react";
 
 const Line = ({ line, transform }) => {
-  const { ax, ay, bx, by } = line;
+  const { a, b } = line;
   return (
     <>
       <line
-        x1={ax}
-        y1={ay}
-        x2={bx}
-        y2={by}
+        x1={a[0]}
+        y1={a[1]}
+        x2={b[0]}
+        y2={b[1]}
         strokeWidth=".1"
         stroke="cyan"
         transform={transform}
