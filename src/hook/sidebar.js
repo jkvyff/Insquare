@@ -15,8 +15,10 @@ const Sidebar = ({
   setView,
   showLines,
   setShowLines,
-  showWings,
-  setShowWings,
+  showLWings,
+  setShowLWings,
+  showRWings,
+  setShowRWings,
   showSquares,
   setShowSquares,
   scanPos,
@@ -30,7 +32,8 @@ const Sidebar = ({
       sampleCount,
       precision,
       showLines,
-      showWings,
+      showLWings,
+      showRWings,
     },
   });
 
@@ -40,7 +43,8 @@ const Sidebar = ({
     value.precision && setprecision(Number(value.precision));
     value.selectView && setView(Number(value.selectView));
     typeof value.showLines && setShowLines(value.showLines);
-    typeof value.showWings && setShowWings(value.showWings);
+    typeof value.showLWings && setShowLWings(value.showLWings);
+    typeof value.showRWings && setShowRWings(value.showRWings);
     typeof value.showSquares && setShowSquares(value.showSquares);
   };
 
@@ -136,12 +140,13 @@ const Sidebar = ({
             <h3>Select View</h3>
 
             <div>
-              <label htmlFor="selectView">Select View</label>
+              <label htmlFor="selectView">Select View:</label>
               <div>
                 <select
                   id="selectView"
                   name="selectView"
-                  className="field"
+                  className="select-field field"
+                  defaultValue={view}
                   ref={register({
                     validate: (value) =>
                       (0 <= value && value < 3) ||
@@ -173,7 +178,6 @@ const Sidebar = ({
             />
 
             <hr />
-
             <h3>Show Features</h3>
 
             <div>
@@ -196,21 +200,40 @@ const Sidebar = ({
             </div>
 
             <div>
-              <label className="checkLabel" htmlFor="showWings">
+              <label className="checkLabel" htmlFor="showLWings">
                 <div>
                   <input
-                    id="showWings"
+                    id="showLWings"
                     type="checkbox"
                     className="checkbox"
-                    name="showWings"
-                    defaultChecked={showWings}
+                    name="showLWings"
+                    defaultChecked={showLWings}
                     ref={register}
                   />
-                  Wings
+                  Left Wings
                 </div>
               </label>
               <p className="error-message">
-                {errors.showWings && errors.showWings.message}
+                {errors.showLWings && errors.showLWings.message}
+              </p>
+            </div>
+
+            <div>
+              <label className="checkLabel" htmlFor="showRWings">
+                <div>
+                  <input
+                    id="showRWings"
+                    type="checkbox"
+                    className="checkbox"
+                    name="showRWings"
+                    defaultChecked={showRWings}
+                    ref={register}
+                  />
+                  Right Wings
+                </div>
+              </label>
+              <p className="error-message">
+                {errors.showRWings && errors.showRWings.message}
               </p>
             </div>
 
@@ -234,7 +257,7 @@ const Sidebar = ({
             </div>
 
             <div className="submit-area">
-              <button className="submit-button" type="submit">
+              <button className="submit-button content-button" type="submit">
                 Generate
               </button>
             </div>

@@ -119,9 +119,15 @@ body {
 }
 
 .content {
+  display: relative;
   flex: 1;
-  max-height: calc(100vh - 9rem);
+  max-height: calc(100vh - 5rem);
+  max-width: 14rem;
   overflow-y: auto;
+}
+
+.content-button {
+  margin-bottom: 2rem;
 }
 
 .side-bar {
@@ -155,10 +161,6 @@ body {
   border-left: 0;
 }
 
-form {
-  margin-right: 4rem;
-}
-
 label {
   display: block;
   color: #4a5568;
@@ -171,7 +173,7 @@ label {
 }
 
 .field {
-  width: 100%;
+  width: 12rem;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
   border-width: 1px;
   border-radius: 0.25rem;
@@ -181,6 +183,10 @@ label {
   padding-right: 0.75rem;
   color: #4a5568;
   line-height: 1.25;
+}
+
+.select-field {
+  width: 100%;
 }
 
 .disabled {

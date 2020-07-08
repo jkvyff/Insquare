@@ -10336,6 +10336,11 @@ tr46@^1.0.1:
   dependencies:
     punycode "^2.1.0"
 
+tragopan@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/tragopan/-/tragopan-1.0.3.tgz#3e83fd1728a7e318af6862b2a51e1c52132b3e5e"
+  integrity sha512-6NDhomfqJmU6qx403eQmRCyjFk02W7P4CbDTSeTJ6igOSMV7KXO5A7pJSTGJyyiFdG3KcQMCCX4FrDrytmfZLg==
+
 trim-repeated@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/trim-repeated/-/trim-repeated-1.0.0.tgz#e3646a2ea4e891312bf7eace6cfb05380bc01c21"

@@ -14,7 +14,8 @@ const SVGMap = ({
   wingsScores,
   squares,
   showLines,
-  showWings,
+  showLWings,
+  showRWings,
   showSquares,
 }) => {
   const [matrix, setMatrix] = useState([2, 0, 0, 2, 200, 200]);
@@ -41,8 +42,6 @@ const SVGMap = ({
   };
 
   const onDragStart = (e) => {
-    console.log(e.changedTouches);
-
     const startPosX =
       typeof e.clientX === "undefined"
         ? e.changedTouches[0].clientX
@@ -71,6 +70,7 @@ const SVGMap = ({
         ? e.changedTouches[0].clientY
         : e.clientY;
 
+    console.log(x, y);
     const dx = x - startX;
     const dy = y - startY;
 
@@ -157,15 +157,29 @@ const SVGMap = ({
             )
           )}
           {showLines &&
-            lines.length < 10000 &&
+            lines.length < 24000 &&
             lines.map((line, i) => <Line key={i} line={line} />)}
-          {showWings &&
-            wings.length < 10000 &&
+          {(showLWings || showRWings) &&
+            wings.length < 24000 &&
             wings.map((wing, i) =>
               wings.length > 1000 && i % 2 === 0 ? (
-                <Wings key={i} line={lines[i]} wings={wing} strokeWidth=".1" />
+                <Wings
+                  key={i}
+                  line={lines[i]}
+                  wings={wing}
+                  strokeWidth=".1"
+                  showLWings={showLWings}
+                  showRWings={showRWings}
+                />
               ) : (
-                <Wings key={i} line={lines[i]} wings={wing} strokeWidth=".1" />
+                <Wings
+                  key={i}
+                  line={lines[i]}
+                  wings={wing}
+                  strokeWidth=".1"
+                  showLWings={showLWings}
+                  showRWings={showRWings}
+                />
               )
             )}
           {showSquares &&
