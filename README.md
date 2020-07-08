@@ -1,15 +1,14 @@
 # Inscribed Square Problem (Toeplitz Square Peg)
 
 I find the Inscribed square problem quite interesting, and simply wanted to create a space to explore its bounds through code.
+<br>
+<img src="public/wiki_inscribed_square.png" alt="Inscribed squares from Wikipedia" width="390">
+<img src="public/sample_found_square.png" alt="Program result on random blob" width="390">
 
 ## Links
 
-[Wikipedia article on the Inscribed Square Problem](https://en.wikipedia.org/wiki/Inscribed_square_problem)
-[Medium Article describing my approach](https://medium.com/@kristianvyff/visually-exploring-inscribed-squares-db7f0e8b426e?sk=44399c552823a9133666dca9818d2ed4)
-
-<br>
-<img src="public/wiki_inscribed_square.png" alt="Inscribed squares from Wikipedia" width="400">
-<img src="public/sample_found_square.png" alt="Program result on random blob" width="400">
+- [Wikipedia article on the Inscribed Square Problem](https://en.wikipedia.org/wiki/Inscribed_square_problem)
+- [Medium Article describing my approach](https://medium.com/@kristianvyff/visually-exploring-inscribed-squares-db7f0e8b426e?sk=44399c552823a9133666dca9818d2ed4)
 
 ## Approach
 
