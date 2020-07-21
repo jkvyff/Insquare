@@ -96,7 +96,7 @@ body {
 .App-header {
   height: 50px;
   display: relative;
-  background: #4299e1;
+  background: lightslategray;
   font-size: calc(10px + 2vmin);
 }
 
@@ -123,7 +123,8 @@ body {
   flex: 1;
   max-height: calc(100vh - 5rem);
   max-width: 14rem;
-  overflow-y: auto;
+  overflow-x: hidden;
+  overflow-y: scroll;
 }
 
 .content-button {
@@ -138,7 +139,7 @@ body {
   flex-direction: column;
   border-right: 1px solid;
   border-radius: 0;
-  border-color: #4299e1;
+  border-color: gray;
   backdrop-filter: blur(8px);
   transition: 0.8s ease;
   padding-top: 1.5rem;
@@ -156,8 +157,8 @@ body {
   position: absolute;
   outline: none;
   z-index: 1;
-  background-color: #4299e1;
-  border-color: #75a6ce;
+  background-color: #ff0066;
+  border-color: rgb(255, 121, 175);
   border-left: 0;
 }
 
@@ -186,7 +187,7 @@ label {
 }
 
 .select-field {
-  width: 100%;
+  width: 97%;
 }
 
 .disabled {

@@ -19,9 +19,12 @@ const SVGMap = ({
   showSquares,
 }) => {
   const [matrix, setMatrix] = useState([2, 0, 0, 2, 200, 200]);
+  const [pointScale, setPointScale] = useState(0.5);
+  const [lineScale, setLineScale] = useState(0.1);
   const [dragging, setDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
+  const visualSamplesCount = 3444; // number choosen to limit patterns in common sample counts
 
   const pan = (dx, dy) => {
     const m = [...matrix];
@@ -39,6 +42,8 @@ const SVGMap = ({
     m[4] += ((1 - scale) * 400) / 2;
     m[5] += ((1 - scale) * 400) / 2;
     setMatrix(m);
+    setPointScale(pointScale / scale);
+    setLineScale(lineScale / scale);
   };
 
   const onDragStart = (e) => {
@@ -92,46 +97,19 @@ const SVGMap = ({
     }
   };
 
+  const visualfeatures = (items, n) => {
+    let result = [items[0]];
+    const totalItems = items.length - 2;
+    const interval = ~~(totalItems / (n - 2));
+    for (let i = 1; i < items.length; i += interval) {
+      result.push(items[i]);
+    }
+    result.push(items[items.length - 1]);
+    return result;
+  };
+
   return (
     <>
-      {/* <svg
-        className="svg"
-        width="100px"
-        height="100px"
-        viewBox="0 0 400 400"
-        xmlns="http://www.w3.org/2000/svg"
-        onMouseDown={(e) => onDragStart(e)}
-        onTouchStart={(e) => onDragStart(e)}
-        onMouseMove={(e) => onDragMove(e)}
-        onTouchMove={(e) => onDragMove(e)}
-        onMouseUp={(e) => onDragEnd(e)}
-        onTouchEnd={(e) => onDragEnd(e)}
-        onWheel={(e) => onWheel(e)}
-      >
-        {wingsScores &&
-          wingsScores[0] &&
-          wingsScores[0].length > 0 &&
-          wingsScores[0].map((score, i) => (
-            <>
-              <circle
-                key={"d" + i}
-                cx={(200 / wingsScores[0].length) * i * 1 - 100}
-                cy={score.left * 3 - 200}
-                data-value="7.2"
-                r="2"
-                fill="red"
-              ></circle>
-              <circle
-                key={"e" + i}
-                cx={(200 / wingsScores[0].length) * i * 1 - 100}
-                cy={score.right * 3 - 200}
-                data-value="7.2"
-                r="2"
-                fill="green"
-              ></circle>
-            </>
-          ))}
-      </svg> */}
       <svg
         className="svg"
         ref={svgGeom}
@@ -149,42 +127,63 @@ const SVGMap = ({
       >
         <g transform={`matrix(${matrix.join(" ")})`}>
           <Jordan dPath={dPath} />
-          {nodes.map((node, i) =>
-            lines.length > 1000 && i % 10 === 0 ? (
-              <SampleDot key={i + "a"} cx={node.x} cy={node.y} />
-            ) : (
-              <SampleDot key={i + "a"} cx={node.x} cy={node.y} />
-            )
-          )}
+          {nodes.length < 1000 &&
+            nodes.map((node, i) => (
+              <SampleDot
+                key={i + "a"}
+                cx={node.x}
+                cy={node.y}
+                pointScale={pointScale}
+              />
+            ))}
+          {nodes.length >= 1000 &&
+            visualfeatures(nodes, 1000).map((node, i) => (
+              <SampleDot
+                key={i + "a"}
+                cx={node.x}
+                cy={node.y}
+                pointScale={pointScale}
+              />
+            ))}
           {showLines &&
-            lines.length < 24000 &&
-            lines.map((line, i) => <Line key={i} line={line} />)}
+            lines.length < visualSamplesCount &&
+            lines.map((line, i) => (
+              <Line key={i} line={line} lineScale={lineScale} />
+            ))}
+          {showLines &&
+            lines.length >= visualSamplesCount &&
+            visualfeatures(lines, visualSamplesCount).map((line, i) => (
+              <Line key={i} line={line} lineScale={lineScale} />
+            ))}
           {(showLWings || showRWings) &&
-            wings.length < 24000 &&
-            wings.map((wing, i) =>
-              wings.length > 1000 && i % 2 === 0 ? (
-                <Wings
-                  key={i}
-                  line={lines[i]}
-                  wings={wing}
-                  strokeWidth=".1"
-                  showLWings={showLWings}
-                  showRWings={showRWings}
-                />
-              ) : (
-                <Wings
-                  key={i}
-                  line={lines[i]}
-                  wings={wing}
-                  strokeWidth=".1"
-                  showLWings={showLWings}
-                  showRWings={showRWings}
-                />
-              )
-            )}
+            wings.length < visualSamplesCount &&
+            wings.map((wing, i) => (
+              <Wings
+                key={i}
+                line={lines[i]}
+                wings={wing}
+                showLWings={showLWings}
+                showRWings={showRWings}
+                pointScale={pointScale}
+                lineScale={lineScale}
+              />
+            ))}
+          {(showLWings || showRWings) &&
+            wings.length >= visualSamplesCount &&
+            visualfeatures(wings, visualSamplesCount).map((wing, i) => (
+              <Wings
+                key={i}
+                line={lines[i]}
+                wings={wing}
+                showLWings={showLWings}
+                showRWings={showRWings}
+                pointScale={pointScale}
+                lineScale={lineScale}
+              />
+            ))}
           {showSquares &&
             squares.map((square, i) => (
-              <Square key={i} square={square} strokeWidth=".5" />
+              <Square key={i} square={square} lineScale={pointScale} />
             ))}
         </g>
       </svg>

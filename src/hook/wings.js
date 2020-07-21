@@ -5,8 +5,9 @@ const Wings = ({
   wings,
   showLWings,
   showRWings,
-  strokeWidth,
   transform,
+  pointScale,
+  lineScale,
 }) => {
   const { a, b } = line;
   const { left, right } = wings;
@@ -34,23 +35,23 @@ const Wings = ({
             y1={a[1]}
             x2={left[0]}
             y2={left[1]}
-            strokeWidth={strokeWidth}
+            strokeWidth={lineScale}
             stroke="purple"
             transform={transform}
           />
           <circle
             cx={left[0]}
             cy={left[1]}
-            r=".5"
+            r={pointScale}
             fill="purple"
             transform={transform}
           />
           {/* <line
-        x1={bx}
-        y1={by}
+        x1={b[0]}
+        y1={b[1]}
         x2={left[0]}
         y2={left[1]}
-        strokeWidth={strokeWidth}
+        strokeWidth={lineScale}
         stroke="green"
         transform={transform}
       /> */}
@@ -63,23 +64,23 @@ const Wings = ({
             y1={a[1]}
             x2={right[0]}
             y2={right[1]}
-            strokeWidth={strokeWidth}
+            strokeWidth={lineScale}
             stroke="blue"
             transform={transform}
           />
           <circle
             cx={right[0]}
             cy={right[1]}
-            r=".5"
+            r={pointScale}
             fill="blue"
             transform={transform}
           />
           {/* <line
-        x1={bx}
-        y1={by}
+        x1={b[0]}
+        y1={b[1]}
         x2={right[0]}
         y2={right[1]}
-        strokeWidth={strokeWidth}
+        strokeWidth={lineScale}
         stroke="green"
         transform={transform}
       /> */}

@@ -1,6 +1,6 @@
 import React from "react";
 
-const Line = ({ line, transform }) => {
+const Line = ({ line, transform, lineScale }) => {
   const { a, b } = line;
   return (
     <>
@@ -9,7 +9,7 @@ const Line = ({ line, transform }) => {
         y1={a[1]}
         x2={b[0]}
         y2={b[1]}
-        strokeWidth=".1"
+        strokeWidth={lineScale}
         stroke="cyan"
         transform={transform}
       />
