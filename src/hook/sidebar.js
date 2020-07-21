@@ -104,6 +104,7 @@ const Sidebar = ({
               viewbox={path[0]}
               path={path[1]}
               setDPath={setDPath}
+              setDPathTemp={setDPathTemp}
             />
           ))}
           <form onSubmit={handleSubmit(onSubmit)}>
