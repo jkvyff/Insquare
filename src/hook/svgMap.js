@@ -29,7 +29,7 @@ const SVGMap = ({
 
   const timesup = (ev) => {
     setTimer(null);
-    zoom(0.8);
+    zoom(0.6);
   };
 
   const pan = (dx, dy) => {
