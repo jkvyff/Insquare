@@ -25,6 +25,12 @@ const SVGMap = ({
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
   const visualSamplesCount = 3444; // number choosen to limit patterns in common sample counts
+  const [timer, setTimer] = useState(null);
+
+  const timesup = (ev) => {
+    setTimer(null);
+    zoom(0.8);
+  };
 
   const pan = (dx, dy) => {
     const m = [...matrix];
@@ -47,6 +53,10 @@ const SVGMap = ({
   };
 
   const onDragStart = (e) => {
+    const event = { ...e };
+    const timeoutId = window.setTimeout(timesup.bind(null, event), 500);
+    setTimer(timeoutId);
+
     const startPosX =
       typeof e.clientX === "undefined"
         ? e.changedTouches[0].clientX
@@ -62,6 +72,11 @@ const SVGMap = ({
   };
 
   const onDragMove = (e) => {
+    if (timer) {
+      // Stop zoomout on move
+      window.clearTimeout(timer);
+      setTimer(null);
+    }
     if (!dragging) {
       return;
     }
@@ -85,7 +100,11 @@ const SVGMap = ({
     setStartY(y);
   };
 
-  const onDragEnd = () => {
+  const onDragEnd = (e) => {
+    if (timer) {
+      window.clearTimeout(timer);
+      setTimer(null);
+    }
     setDragging(false);
   };
 
@@ -124,6 +143,7 @@ const SVGMap = ({
         onMouseUp={(e) => onDragEnd(e)}
         onTouchEnd={(e) => onDragEnd(e)}
         onWheel={(e) => onWheel(e)}
+        onDoubleClick={(e) => zoom(1.5)}
       >
         <g transform={`matrix(${matrix.join(" ")})`}>
           <Jordan dPath={dPath} />

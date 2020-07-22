@@ -162,6 +162,32 @@ body {
   border-left: 0;
 }
 
+.shape-buttons {
+  height: auto;
+  display: grid;
+  grid-gap: 2px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.s-button {
+  height: 35px;
+  width: 35px;
+  background: #90cdf4;
+  border-radius: 0.25rem;
+  border-bottom: 3px solid #63b3ed;
+  padding: 8px;
+}
+
+.s-button:hover {
+  background: #4299e1;
+}
+
+.s-button:active {
+  position: relative;
+  top: 3px;
+  border: none;
+}
+
 label {
   display: block;
   color: #4a5568;

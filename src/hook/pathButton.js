@@ -3,7 +3,8 @@ import React from "react";
 const PathButton = ({ viewbox, path, setDPath, setDPathTemp }) => {
   return (
     <>
-      <button
+      <div
+        className="s-button"
         onClick={() => {
           setDPath(path);
           setDPathTemp(path);
@@ -12,7 +13,7 @@ const PathButton = ({ viewbox, path, setDPath, setDPathTemp }) => {
         <svg viewBox={viewbox} width="38" height="38">
           <path fill="#FF0066" d={path} />
         </svg>
-      </button>
+      </div>
     </>
   );
 };
